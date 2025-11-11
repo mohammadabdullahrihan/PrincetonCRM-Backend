@@ -29,10 +29,33 @@ const fileUpload = require('express-fileupload');
 // create our Express app
 const app = express();
 
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://crm-princetondevelopmentltdcom.netlify.app',
+  'https://api-crm-princetondevelopmentltdcom.vercel.app',
+  'https://princeton-crm.vercel.app',
+  'https://crm-princetondevelopmentltd.com',
+  'https://crm-princetondevelopmentltd.com/api',
+  'https://crm.princetondevelopmentltd.com',
+];
+
 app.use(
   cors({
-    origin: true,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Allow all origins for now, you can restrict later
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 
