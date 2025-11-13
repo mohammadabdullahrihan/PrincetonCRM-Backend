@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+// Ensure the Setting model is loaded
+require('../../models/coreModels/Setting');
 const Model = mongoose.model('Setting');
 
 const listBySettingKey = async ({ settingKeyArray = [] }) => {
@@ -15,7 +17,7 @@ const listBySettingKey = async ({ settingKeyArray = [] }) => {
     for (const settingKey of settingKeyArray) {
       settingsToShow.$or.push({ settingKey });
     }
-    let results = await Model.find({ ...settings }).where('removed', false);
+    let results = await Model.find({ ...settingsToShow }).where('removed', false);
 
     // If no results found, return document not found
     if (results.length >= 1) {

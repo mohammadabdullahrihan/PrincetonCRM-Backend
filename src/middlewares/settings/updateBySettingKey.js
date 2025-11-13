@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+// Ensure the Setting model is loaded
+require('../../models/coreModels/Setting');
 const Model = mongoose.model('Setting');
 
 const updateBySettingKey = async ({ settingKey, settingValue }) => {
