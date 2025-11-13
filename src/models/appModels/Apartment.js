@@ -29,7 +29,7 @@ const apartmentSchema = new mongoose.Schema({
   // Apartment Information fields
   slNo: String,
   location: String,
-  floor: Number,
+  floor: String,
   size: String,
   facilities: String,
   date: Date,
