@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const propertyCtrl = require('@/controllers/appControllers/propertyController');
-const { catchErrors } = require('@/handlers/errorHandlers');
+const propertyCtrl = require('../../controllers/appControllers/propertyController');
+const { catchErrors } = require('../../handlers/errorHandlers');
 
 // Optional authentication middleware
 let { isValidAuthToken, adminOnly } = {};
 try {
-  ({ isValidAuthToken, adminOnly } = require('@/controllers/coreControllers/adminAuth'));
+  ({ isValidAuthToken, adminOnly } = require('../../controllers/coreControllers/adminAuth'));
 } catch (e) {
   // Fallback for dev mode (no auth)
   isValidAuthToken = (req, res, next) => next();

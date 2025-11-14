@@ -36,16 +36,28 @@ async function connectToDatabase() {
   }
 }
 
-// Load all models before starting the app
+// Load all models SYNCHRONOUSLY before any other imports
 const modelsPath = path.join(__dirname, '..', 'src', 'models', '**', '*.js');
 const modelsFiles = globSync(modelsPath);
 
+console.log(`Loading ${modelsFiles.length} model files...`);
 for (const filePath of modelsFiles) {
-  require(path.resolve(filePath));
+  try {
+    require(path.resolve(filePath));
+    console.log(`✓ Loaded model: ${path.basename(filePath)}`);
+  } catch (error) {
+    console.error(`✗ Failed to load model ${path.basename(filePath)}:`, error.message);
+    throw error;
+  }
 }
 
-// Import the Express app
+console.log('All models loaded successfully. Registered models:', mongoose.modelNames());
+
+// Import the Express app AFTER all models are loaded
 const app = require('../src/app');
+
+// Initialize routes after models are loaded
+app.initializeRoutes();
 
 // Serverless function handler
 module.exports = async (req, res) => {

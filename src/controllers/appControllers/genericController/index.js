@@ -1,4 +1,4 @@
-const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
+const createCRUDController = require('../../middlewaresControllers/createCRUDController');
 const { remove, modelMap } = require('./delete');
 
 function modelController() {

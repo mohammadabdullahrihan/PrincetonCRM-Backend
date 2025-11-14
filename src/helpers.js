@@ -6,9 +6,10 @@
 const fs = require('fs');
 
 const currency = require('currency.js');
+const moment = require('moment');
 
 // moment.js is a handy library for displaying dates. We need this in our templates to display things like "Posted 5 minutes ago"
-exports.moment = require('moment');
+exports.moment = moment;
 
 // Making a static map is really long - this is a handy helper function to make one
 

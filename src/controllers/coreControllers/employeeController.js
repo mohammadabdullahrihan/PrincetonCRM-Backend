@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+
+// Ensure the Admin model is loaded
+require('../../models/coreModels/Admin');
 const Admin = mongoose.model('Admin');
 
 const employeeController = {
