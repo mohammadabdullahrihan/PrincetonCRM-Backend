@@ -15,20 +15,31 @@ if (major < 20) {
 
 // Load models before anything else
 const loadModels = require('./utils/loadModels');
+const registerModels = require('./utils/registerModels');
 
 async function startInMemoryMongoDB() {
   try {
     console.log('🚀 Starting in-memory MongoDB...');
     const { MongoMemoryServer } = require('mongodb-memory-server');
     
+    // Ensure the temp directory exists
+    const fs = require('fs');
+    const path = require('path');
+    const tmpDir = path.join(process.cwd(), 'tmp', 'mongodb');
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir, { recursive: true });
+    }
+
     const mongod = await MongoMemoryServer.create({
       instance: {
         storageEngine: 'wiredTiger',
-        dbPath: '/tmp/mongodb'
+        dbPath: tmpDir
       }
     });
     
     const uri = mongod.getUri();
+    console.log('🔗 MongoDB URI:', uri);
+    
     await mongoose.connect(uri);
     console.log('✅ Connected to in-memory MongoDB');
     return mongod;
@@ -76,6 +87,9 @@ async function verifyModels() {
 
 async function startServer() {
   try {
+    // Register all models first
+    registerModels();
+
     // Try to connect to the main MongoDB
     try {
       await connectToMongoDB();
