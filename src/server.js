@@ -15,12 +15,16 @@ const loadModels = require('./utils/loadModels');
 
 async function connectWithFallback() {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.DATABASE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('✅ MongoDB connected to', process.env.DATABASE);
+    // Remove deprecated options and add recommended ones
+    const options = {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      family: 4, // Use IPv4, skip trying IPv6
+    };
+
+    await mongoose.connect(process.env.DATABASE, options);
+    console.log('✅ MongoDB connected to', process.env.DATABASE.split('@')[1] || process.env.DATABASE);
 
     // Load all models after successful connection
     const { getModel } = loadModels();
@@ -29,7 +33,7 @@ async function connectWithFallback() {
     const requiredModels = ['Setting', 'Admin', 'User'];
     for (const modelName of requiredModels) {
       try {
-        getModel(modelName);
+        const model = getModel(modelName);
         console.log(`✅ Model loaded: ${modelName}`);
       } catch (err) {
         console.error(`❌ Error loading model ${modelName}:`, err.message);
@@ -56,30 +60,23 @@ async function connectWithFallback() {
     console.error('❌ Failed to connect to MongoDB:', error.message);
     console.log('Falling back to in-memory database for development...');
     
-    if (process.env.NODE_ENV !== 'production') {
-      try {
-        const { MongoMemoryServer } = require('mongodb-memory-server');
-        const mongod = await MongoMemoryServer.create();
-        const uri = mongod.getUri();
-        
-        await mongoose.connect(uri);
-        console.log('✅ Connected to in-memory MongoDB');
-        
-        // Load models for in-memory DB
-        loadModels();
-        
-        // Start the server
-        const app = require('./app');
-        const port = process.env.PORT || 3000;
-        app.listen(port, () => {
-          console.log(`🚀 Server running on port ${port} with in-memory DB`);
-        });
-        
-      } catch (memError) {
-        console.error('❌ Failed to start in-memory MongoDB:', memError);
-        process.exit(1);
-      }
-    } else {
+    try {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongod = await MongoMemoryServer.create({
+        instance: {
+          storageEngine: 'wiredTiger',
+          dbPath: '/tmp/mongodb' // Use /tmp which is writable in most environments
+        }
+      });
+      const uri = mongod.getUri();
+      await mongoose.connect(uri);
+      console.log('✅ Connected to in-memory MongoDB');
+      
+      // Load models again for in-memory DB
+      const { getModel } = loadModels();
+      console.log('✅ In-memory database initialized');
+    } catch (memErr) {
+      console.error('❌ Failed to start in-memory MongoDB:', memErr);
       process.exit(1);
     }
   }
