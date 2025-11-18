@@ -525,7 +525,7 @@ exports.executeCommand = async (req, res) => {
         createdBy,
       });
       try {
-        const { createNotification } = require('@/helpers/notificationHelper');
+        const { createNotification } = require('../../helpers/notificationHelper');
         await createNotification({
           userId: createdBy,
           type: 'task',
