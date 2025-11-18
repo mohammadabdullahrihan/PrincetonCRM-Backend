@@ -49,12 +49,11 @@ mongoose.connection.on('error', (error) => {
   console.error(`2. 🚫 Error → : ${error.message}`);
 });
 
-// Models are loaded in api/index.js for serverless deployment
-// Uncomment below lines for local development if needed
-// const modelsFiles = globSync('./src/models/**/*.js');
-// for (const filePath of modelsFiles) {
-//   require(path.resolve(filePath));
-// }
+const modelsFiles = globSync('./src/models/**/*.js');
+
+for (const filePath of modelsFiles) {
+  require(path.resolve(filePath));
+}
 
 // Start our app!
 const app = require('./app');

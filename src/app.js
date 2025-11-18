@@ -8,10 +8,23 @@ const cookieParser = require('cookie-parser');
 const { globSync } = require('glob');
 const path = require('path');
 
-// Models are loaded in api/index.js for serverless environment
-// Routes will be loaded dynamically to prevent early model access
+// Ensure all Mongoose models are registered before controllers/routes are loaded
+const modelsFiles = globSync('./src/models/**/*.js');
+for (const filePath of modelsFiles) {
+  require(path.resolve(filePath));
+}
+
+const coreAuthRouter = require('./routes/coreRoutes/coreAuth');
+const coreApiRouter = require('./routes/coreRoutes/coreApi');
+const coreDownloadRouter = require('./routes/coreRoutes/coreDownloadRouter');
+const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');
+const notificationRouter = require('./routes/coreRoutes/notificationRoutes');
+const aiRouter = require('./routes/coreRoutes/aiRoutes');
+const employeeRouter = require('./routes/coreRoutes/employeeRoutes');
+const adminAuth = require('./controllers/coreControllers/adminAuth');
 
 const errorHandlers = require('./handlers/errorHandlers');
+const erpApiRouter = require('./routes/appRoutes/appApi');
 
 const fileUpload = require('express-fileupload');
 // create our Express app
@@ -34,7 +47,7 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-
+      
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
@@ -119,32 +132,14 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Function to initialize routes after models are loaded
-function initializeRoutes() {
-  console.log('Initializing routes after models are loaded...');
-  
-  const coreAuthRouter = require('./routes/coreRoutes/coreAuth');
-  const coreApiRouter = require('./routes/coreRoutes/coreApi');
-  const coreDownloadRouter = require('./routes/coreRoutes/coreDownloadRouter');
-  const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');
-  const notificationRouter = require('./routes/coreRoutes/notificationRoutes');
-  const employeeRouter = require('./routes/coreRoutes/employeeRoutes');
-  const adminAuth = require('./controllers/coreControllers/adminAuth');
-  const erpApiRouter = require('./routes/appRoutes/appApi');
-
-  app.use('/api', coreAuthRouter);
-  app.use('/api/employee', employeeRouter); // Must be before erpApiRouter to override generic employee routes
-  app.use('/api', adminAuth.isValidAuthToken, coreApiRouter);
-  app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);
-  app.use('/api', adminAuth.isValidAuthToken, notificationRouter);
-  app.use('/download', coreDownloadRouter);
-  app.use('/public', corePublicRouter);
-  
-  console.log('Routes initialized successfully');
-}
-
-// Export the route initialization function
-app.initializeRoutes = initializeRoutes;
+app.use('/api', coreAuthRouter);
+app.use('/api/employee', employeeRouter); // Must be before erpApiRouter to override generic employee routes
+app.use('/api', adminAuth.isValidAuthToken, coreApiRouter);
+app.use('/api', adminAuth.isValidAuthToken, erpApiRouter);
+app.use('/api', adminAuth.isValidAuthToken, notificationRouter);
+app.use('/api', adminAuth.isValidAuthToken, aiRouter);
+app.use('/download', coreDownloadRouter);
+app.use('/public', corePublicRouter);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);

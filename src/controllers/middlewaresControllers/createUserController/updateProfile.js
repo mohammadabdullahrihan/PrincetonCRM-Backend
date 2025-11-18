@@ -77,16 +77,8 @@ const updateProfile = async (userModel, req, res) => {
   if (req.body.email) updates.email = req.body.email;
   if (req.body.name) updates.name = req.body.name;
   if (req.body.surname) updates.surname = req.body.surname;
-   
-  // Handle firstName and lastName properly - combine them for the name field
-  if (req.body.firstName && req.body.lastName) {
-    updates.name = `${req.body.firstName} ${req.body.lastName}`.trim();
-  } else if (req.body.firstName) {
-    updates.name = req.body.firstName;
-  } else if (req.body.lastName) {
-    updates.surname = req.body.lastName;
-  }
-  
+  if (req.body.firstName) updates.name = req.body.firstName;
+  if (req.body.lastName) updates.surname = req.body.lastName;
   if (req.body.photo) updates.photo = req.body.photo;
   if (req.body.role) updates.role = req.body.role;
   if (req.body.phone) updates.phone = req.body.phone;

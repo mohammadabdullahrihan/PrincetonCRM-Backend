@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const { catchErrors } = require('../../handlers/errorHandlers');
-const employeeController = require('../../controllers/coreControllers/employeeController');
-const adminAuth = require('../../controllers/coreControllers/adminAuth');
+const { catchErrors } = require('@/handlers/errorHandlers');
+const employeeController = require('@/controllers/coreControllers/employeeController');
+const adminAuth = require('@/controllers/coreControllers/adminAuth');
 
 // All routes require authentication
 router.use(adminAuth.isValidAuthToken);

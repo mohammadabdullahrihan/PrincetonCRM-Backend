@@ -14,7 +14,7 @@ const list = asyncHandler(async (req, res) => {
       isVIP,
       q,
       page = 1,
-      limit = 20,
+      limit = 50,
       sortBy = 'createdAt',
       sortDir = 'desc',
       employee,

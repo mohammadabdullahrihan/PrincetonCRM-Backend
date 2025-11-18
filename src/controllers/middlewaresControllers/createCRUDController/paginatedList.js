@@ -1,7 +1,7 @@
 const paginatedList = async (Model, req, res, next) => {
   try {
     const page = req.query.page || 1;
-    const limit = parseInt(req.query.items) || 1000; // Increased default limit
+    const limit = parseInt(req.query.items) || 50; // Default to 50 items per page
     const skip = page * limit - limit;
 
     const { sortBy = 'createdAt', sortValue = -1, filter, equal } = req.query;

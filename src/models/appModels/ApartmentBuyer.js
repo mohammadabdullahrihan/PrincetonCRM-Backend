@@ -29,7 +29,7 @@ const apartmentBuyerSchema = new mongoose.Schema({
   // Apartment Sale specific fields
   date: Date,
   location: String,
-  floor: Number,
+  floor: String,
   size: String,
   facilities: String,
   unit: String,

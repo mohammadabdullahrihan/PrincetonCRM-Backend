@@ -14,8 +14,7 @@
     "reset": "node src/setup/reset.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "vercel-build": "echo 'Build complete'"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.509.0",

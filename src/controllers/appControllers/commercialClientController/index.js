@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const createCRUDController = require('../../middlewaresControllers/createCRUDController');
+const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
 
 function modelController() {
   const Model = mongoose.model('CommercialClient');

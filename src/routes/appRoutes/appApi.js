@@ -1,10 +1,9 @@
 const express = require('express');
-const { catchErrors } = require('../../handlers/errorHandlers');
+const { catchErrors } = require('@/handlers/errorHandlers');
 const router = express.Router();
 
-// Lazy load controllers and routes list
-const getAppControllers = require('../../controllers/appControllers');
-const getRoutesList = () => require('../../models/utils').routesList;
+const appControllers = require('@/controllers/appControllers');
+const { routesList } = require('@/models/utils');
 
 const routerApp = (entity, controller) => {
   router.route(`/${entity}/create`).post(catchErrors(controller['create']));
@@ -26,19 +25,9 @@ const routerApp = (entity, controller) => {
   }
 };
 
-// Initialize routes when this module is first accessed
-console.log('Initializing app API routes...');
-const appControllers = getAppControllers();
-const routesList = getRoutesList();
-
 routesList.forEach(({ entity, controllerName }) => {
   const controller = appControllers[controllerName];
-  if (controller) {
-    routerApp(entity, controller);
-    console.log(`✓ Registered routes for: ${entity}`);
-  } else {
-    console.warn(`⚠ Controller not found for: ${controllerName}`);
-  }
+  routerApp(entity, controller);
 });
 
 // include Property routes here
