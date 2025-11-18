@@ -52,7 +52,7 @@ const generateSimpleTests = () => {
       const testFilePath = path.join(__dirname, testFileName);
 
       const testContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('${entity.charAt(0).toUpperCase() + entity.slice(1)} API', () => {
@@ -285,7 +285,7 @@ describe('${entity.charAt(0).toUpperCase() + entity.slice(1)} API', () => {
   // Generate property-specific tests
   try {
     const propertyTestContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('Property API (Extended)', () => {
@@ -390,7 +390,7 @@ describe('Property API (Extended)', () => {
   // Generate core tests
   try {
     const coreTestContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('Core API Routes', () => {

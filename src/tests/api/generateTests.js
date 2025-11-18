@@ -9,7 +9,7 @@ const generateEntityTest = (entity) => {
   const testFileName = `${entity}.test.js`;
 
   const testContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 
 
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
@@ -82,7 +82,7 @@ const generatePropertyTest = () => {
   const testFileName = `${entity}.test.js`;
 
   const testContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('Property API (Extended)', () => {
@@ -140,7 +140,7 @@ const generateCoreTest = () => {
   const testFileName = 'core.test.js';
 
   const testContent = `const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('Core API Routes', () => {

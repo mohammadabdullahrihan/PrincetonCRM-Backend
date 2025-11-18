@@ -1,6 +1,6 @@
 const express = require('express');
-const { catchErrors } = require('@/handlers/errorHandlers');
-const aiController = require('@/controllers/coreControllers/aiController');
+const { catchErrors } = require('../../handlers/errorHandlers');
+const aiController = require('../../controllers/coreControllers/aiController');
 
 const router = express.Router();
 

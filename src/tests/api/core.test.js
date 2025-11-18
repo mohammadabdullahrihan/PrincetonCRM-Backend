@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('@/app');
+const app = require('../../app');
 const { generateAuthToken, getAuthHeaders, testEndpoint } = require('./testUtils');
 
 describe('Core API Routes', () => {
