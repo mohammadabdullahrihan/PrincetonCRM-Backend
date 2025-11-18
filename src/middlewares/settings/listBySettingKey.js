@@ -1,30 +1,33 @@
 const mongoose = require('mongoose');
-
+// Ensure Setting model is loaded
+require('../../models/coreModels/Setting');
 const Model = mongoose.model('Setting');
 
 const listBySettingKey = async ({ settingKeyArray = [] }) => {
   try {
-    // Find document by id
-
     const settingsToShow = { $or: [] };
 
     if (settingKeyArray.length === 0) {
       return [];
     }
 
-    for (const settingKey of settingKeyArray) {
-      settingsToShow.$or.push({ settingKey });
-    }
-    let results = await Model.find({ ...settings }).where('removed', false);
+    settingKeyArray.forEach((each) => {
+      settingsToShow.$or.push({ settingKey: each });
+    });
 
-    // If no results found, return document not found
-    if (results.length >= 1) {
-      return results;
-    } else {
+    // Find the document by id using settingsToShow instead of undefined 'settings'
+    const result = await Model.find(settingsToShow).where('removed', false);
+
+    // If no results found, return empty array
+    if (!result || result.length < 1) {
       return [];
     }
-  } catch {
-    return [];
+
+    // Return the result
+    return result;
+  } catch (error) {
+    console.error('Error in listBySettingKey:', error);
+    throw error;
   }
 };
 
