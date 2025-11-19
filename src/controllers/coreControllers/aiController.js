@@ -1,3 +1,6 @@
+require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.local' });
+
 exports.geminiChat = async (req, res) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
