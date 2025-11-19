@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const Model = mongoose.model('Quote');
 
 const paginatedList = async (req, res) => {
-  const page = req.query.page || 1;
-  const limit = parseInt(req.query.items) || 10;
-  const skip = page * limit - limit;
+  const page = 1;
+  const limit = 10000;
+  const skip = 0;
 
   //  Query the database for a list of all results
   const { sortBy = 'enabled', sortValue = -1, filter, equal } = req.query;
