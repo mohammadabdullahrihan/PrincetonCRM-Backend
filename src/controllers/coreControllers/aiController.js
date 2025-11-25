@@ -104,7 +104,7 @@ exports.executeCommand = async (req, res) => {
       if (c === 'apartment') {
         if (s === 'all') return { model: 'Apartment', category: 'Apartment', subCategory: 'all' };
         if (s === 'sale') return { model: 'ApartmentBuyer', category: 'Apartment', subCategory: 'sale' };
-        if (s === 'owner') return { model: 'Apartment', category: 'Apartment', subCategory: 'owner' };
+        if (s === 'owner') return { model: 'ApartmentOwner', category: 'Apartment', subCategory: 'owner' };
         if (s === 'client') return { model: 'ApartmentClient', category: 'Apartment', subCategory: 'client' };
         if (s === 'vip') return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip' };
         if (s === 'vip-client') return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip-client' };
@@ -261,7 +261,7 @@ exports.executeCommand = async (req, res) => {
       if (c === 'apartment') {
         if (s === 'all') return { model: 'Apartment', category: 'Apartment', subCategory: 'all' };
         if (s === 'sale') return { model: 'ApartmentBuyer', category: 'Apartment', subCategory: 'sale' };
-        if (s === 'owner') return { model: 'Apartment', category: 'Apartment', subCategory: 'owner' };
+        if (s === 'owner') return { model: 'ApartmentOwner', category: 'Apartment', subCategory: 'owner' };
         if (s === 'client') return { model: 'ApartmentClient', category: 'Apartment', subCategory: 'client' };
         if (s === 'vip') return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip' };
         if (s === 'vip-client') return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip-client' };
