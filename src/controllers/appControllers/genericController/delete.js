@@ -4,6 +4,7 @@ const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, ne
 // Model name mapping for different endpoints
 const modelMap = {
   'apartment': 'Apartment',
+  'apartmentowner': 'ApartmentOwner',
   'apartmentclient': 'ApartmentClient',
   'apartmentvip': 'ApartmentVIP',
   'apartmentbuyer': 'ApartmentBuyer',
