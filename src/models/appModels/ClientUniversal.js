@@ -37,6 +37,7 @@ const clientUniversalSchema = new mongoose.Schema({
   expectedLocation: String,
   remark: String,
   status: String,
+  statusColor: String,
   
   // Additional fields
   location: String,

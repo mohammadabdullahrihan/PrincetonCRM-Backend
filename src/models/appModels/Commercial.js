@@ -30,7 +30,7 @@ const commercialSchema = new mongoose.Schema({
   slNo: String,
   date: Date,
   location: String,
-  floor: Number,
+  floor: String,
   size: String,
   facilities: String,
   unit: String,
