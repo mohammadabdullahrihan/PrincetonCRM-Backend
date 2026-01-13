@@ -33,6 +33,7 @@ const projectSchema = new mongoose.Schema({
   location: String,
   remark: String,
   ref: String,
+  developer: String,
   customFields: Object, // optional dynamic fields if needed
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {
@@ -52,4 +53,4 @@ projectSchema.index({ name: 1 });
 projectSchema.index({ createdBy: 1 });
 projectSchema.index({ removed: 1, enabled: 1 });
 
-module.exports = mongoose.model('Project', projectSchema);
+module.exports = mongoose.model('ProjectFile', projectSchema, 'project-files');
