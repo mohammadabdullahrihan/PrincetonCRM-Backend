@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const landSchema = new mongoose.Schema({
+const landPurchaseSchema = new mongoose.Schema({
   removed: {
     type: Boolean,
     default: false,
@@ -26,33 +26,13 @@ const landSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // Land Information fields
+  // Land Purchase Information fields
   slNo: String,
   date: Date,
-  location: String,
-  landArea: String,
-  facilities: String,
-  duration: String,
-  price: String,
-  remark: String,
-  refName: String,
-  
-  // Legacy/common fields
   name: String,
-  number: String,
+  cellNo: String,
   budget: String,
-  refNo: String,
-  expectedLocation: String,
-  size: String,
-  developer: String,
-  ownerName: String,
-  ownerNumber: String,
-  ref: String,
-  status: String,
-  
-  // Visit tracking fields
-  visitedLocation: String,
-  whoVisited: String,
+  refName: String,
   
   customFields: Object, // optional dynamic fields if needed
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
@@ -67,10 +47,9 @@ const landSchema = new mongoose.Schema({
 });
 
 // Add indexes for better performance
-landSchema.index({ category: 1, subCategory: 1 });
-landSchema.index({ location: 1 });
-landSchema.index({ name: 1 });
-landSchema.index({ createdBy: 1 });
-landSchema.index({ removed: 1, enabled: 1 });
+landPurchaseSchema.index({ category: 1, subCategory: 1 });
+landPurchaseSchema.index({ name: 1 });
+landPurchaseSchema.index({ createdBy: 1 });
+landPurchaseSchema.index({ removed: 1, enabled: 1 });
 
-module.exports = mongoose.model('Land', landSchema);
+module.exports = mongoose.model('LandPurchase', landPurchaseSchema);
