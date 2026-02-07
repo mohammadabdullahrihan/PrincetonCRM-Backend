@@ -28,6 +28,7 @@ const projectSchema = new mongoose.Schema({
   },
   date: Date,
   name: String,
+  slNo: String,
   number: String,
   budget: String,
   location: String,
