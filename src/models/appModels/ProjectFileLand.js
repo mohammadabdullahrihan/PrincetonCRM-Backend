@@ -31,6 +31,10 @@ const projectLandSchema = new mongoose.Schema({
   area: String,
   refName: String,
   slNo: String,
+  remarks: {
+    type: String,
+    default: '-',
+  },
   customFields: Object, // optional dynamic fields if needed
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {

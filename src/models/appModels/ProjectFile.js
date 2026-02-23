@@ -33,6 +33,10 @@ const projectSchema = new mongoose.Schema({
   budget: String,
   location: String,
   remark: String,
+  remarks: {
+    type: String,
+    default: '-',
+  },
   ref: String,
   developer: String,
   customFields: Object, // optional dynamic fields if needed
