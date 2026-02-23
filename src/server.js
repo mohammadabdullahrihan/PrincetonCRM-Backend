@@ -21,7 +21,7 @@ async function startInMemoryMongoDB() {
   try {
     console.log('🚀 Starting in-memory MongoDB...');
     const { MongoMemoryServer } = require('mongodb-memory-server');
-    
+
     // Ensure the temp directory exists
     const fs = require('fs');
     const path = require('path');
@@ -36,10 +36,10 @@ async function startInMemoryMongoDB() {
         dbPath: tmpDir
       }
     });
-    
+
     const uri = mongod.getUri();
     console.log('🔗 MongoDB URI:', uri);
-    
+
     await mongoose.connect(uri);
     console.log('✅ Connected to in-memory MongoDB');
     return mongod;
@@ -107,22 +107,25 @@ async function startServer() {
     // Load the app after successful connection
     const app = require('./app');
     const port = process.env.PORT || 3000;
-    
+
     const server = app.listen(port, () => {
       console.log(`🚀 Server running on port ${port}`);
       console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
     });
 
     // Handle graceful shutdown
-    process.on('SIGTERM', () => {
+    process.on('SIGTERM', async () => {
       console.log('SIGTERM received. Shutting down gracefully...');
-      server.close(() => {
+      try {
+        await new Promise((resolve) => server.close(resolve));
         console.log('Server closed');
-        mongoose.connection.close(false, () => {
-          console.log('MongoDB connection closed');
-          process.exit(0);
-        });
-      });
+        await mongoose.connection.close();
+        console.log('MongoDB connection closed');
+        process.exit(0);
+      } catch (err) {
+        console.error('Error during shutdown:', err);
+        process.exit(1);
+      }
     });
 
   } catch (error) {
