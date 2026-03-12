@@ -38,11 +38,18 @@ const clientUniversalSchema = new mongoose.Schema({
   remark: String,
   status: String,
   statusColor: String,
-  
+  statusHistory: [
+    {
+      date: Date,
+      status: String,
+      statusColor: String,
+    },
+  ],
+
   // Additional fields
   location: String,
   refName: String,
-  
+
   customFields: Object, // optional dynamic fields if needed
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   created: {
