@@ -60,6 +60,20 @@ if (projectExpenseController) {
   router.route('/project/expense/delete/:id').delete(catchErrors(projectExpenseController['delete']));
 }
 
+// /api/project/income/* → projectincomeController
+const projectIncomeController = appControllers['projectIncomeController'];
+if (projectIncomeController) {
+  router.route('/project/income/list').get(catchErrors(projectIncomeController['list']));
+  router.route('/project/income/listAll').get(catchErrors(projectIncomeController['listAll']));
+  router.route('/project/income/search').get(catchErrors(projectIncomeController['search']));
+  router.route('/project/income/filter').get(catchErrors(projectIncomeController['filter']));
+  router.route('/project/income/summary').get(catchErrors(projectIncomeController['summary']));
+  router.route('/project/income/create').post(catchErrors(projectIncomeController['create']));
+  router.route('/project/income/read/:id').get(catchErrors(projectIncomeController['read']));
+  router.route('/project/income/update/:id').patch(catchErrors(projectIncomeController['update']));
+  router.route('/project/income/delete/:id').delete(catchErrors(projectIncomeController['delete']));
+}
+
 // /api/calendar/events/* → calendareventController
 const calendarEventController = appControllers['calendarEventController'];
 if (calendarEventController) {
