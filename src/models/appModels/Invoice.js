@@ -6,14 +6,12 @@ const invoiceSchema = new mongoose.Schema({
     default: false,
   },
 
-  createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin', required: true },
+  createdBy: { type: mongoose.Schema.ObjectId, ref: 'Admin' },
   number: {
     type: Number,
-    required: true,
   },
   year: {
     type: Number,
-    required: true,
   },
   content: String,
   recurring: {
@@ -22,16 +20,13 @@ const invoiceSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true,
   },
   expiredDate: {
     type: Date,
-    required: true,
   },
   client: {
     type: mongoose.Schema.ObjectId,
     ref: 'Client',
-    required: true,
     autopopulate: true,
   },
   converted: {
@@ -56,7 +51,6 @@ const invoiceSchema = new mongoose.Schema({
     type: String,
     default: 'NA',
     uppercase: true,
-    required: true,
   },
   credit: {
     type: Number,
