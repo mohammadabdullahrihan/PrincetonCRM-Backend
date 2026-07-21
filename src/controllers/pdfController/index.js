@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const QRCode = require('qrcode');
-let pdf = require('html-pdf');
 const { listAllSettings, loadSettings } = require('../../middlewares/settings');
 const { getData } = require('../../middlewares/serverData');
 const useLanguage = require('../../locale/useLanguage');
@@ -56,6 +55,36 @@ for (const weight of [400, 600, 700, 800]) {
     poppinsFonts[weight] = null;
   }
 }
+
+// PhantomJS/html-pdf was abandoned in 2018 and its prebuilt binary can't run at
+// all on serverless platforms (Vercel's read-only filesystem + function-size
+// limits), so PDF rendering now runs on real Chromium via Puppeteer instead.
+// Locally and on Render (a normal persistent container) the full `puppeteer`
+// package's own bundled Chromium is used; on Vercel, `puppeteer-core` drives the
+// serverless-optimized binary from `@sparticuz/chromium` (a purpose-built
+// package for exactly this AWS-Lambda/Vercel read-only-filesystem scenario).
+async function launchBrowser() {
+  if (process.env.VERCEL) {
+    const chromium = require('@sparticuz/chromium');
+    const puppeteerCore = require('puppeteer-core');
+    return puppeteerCore.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+  }
+  const puppeteer = require('puppeteer');
+  return puppeteer.launch({ headless: true });
+}
+
+// A4 at 96dpi (the standard CSS-px-to-print convention Chromium/Puppeteer use).
+// Setting the viewport to this size before rendering means percentage-based CSS
+// (width:100%, the header-spacer's width-based padding-top trick, etc.) resolves
+// against the SAME dimensions the final PDF page actually prints at, so layout
+// math done against this page doesn't drift between preview and printed output.
+const PAGE_WIDTH_PX = 794;
+const PAGE_HEIGHT_PX = 1123;
 
 exports.generatePdf = async (
   modelName,
@@ -136,17 +165,27 @@ exports.generatePdf = async (
       // Invoice uses a full-bleed background design (no page margin); other
       // pug templates (quote/offer/payment) still assume the standard 10mm inset.
       const border = modelName.toLowerCase() === 'invoice' ? '0' : '10mm';
+      const margin = { top: border, bottom: border, left: border, right: border };
 
-      pdf
-        .create(htmlContent, {
-          format: info.format,
-          orientation: 'portrait',
-          border,
-        })
-        .toFile(targetLocation, function (error) {
-          if (error) throw new Error(error);
-          if (callback) callback();
+      const browser = await launchBrowser();
+      try {
+        const page = await browser.newPage();
+        await page.setViewport({ width: PAGE_WIDTH_PX, height: PAGE_HEIGHT_PX });
+        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        // Base64 @font-face sources still need a tick to actually apply before
+        // the PDF is captured, even though nothing further loads over network.
+        await page.evaluateHandle('document.fonts.ready');
+        await page.pdf({
+          path: targetLocation,
+          format: info.format || 'A4',
+          printBackground: true,
+          margin,
         });
+      } finally {
+        await browser.close();
+      }
+
+      if (callback) callback();
     }
   } catch (error) {
     throw new Error(error);

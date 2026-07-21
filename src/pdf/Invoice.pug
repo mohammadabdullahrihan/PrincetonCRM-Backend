@@ -52,16 +52,17 @@ html
          resolves percentage padding against the containing block's width, even for
          padding-top) which is exactly how background-size:100%-width scales this
          image, so the reserved space always tracks the artwork's header height.
-         .page's min-height (825px) was found empirically for this html-pdf/PhantomJS
-         build: it renders A4 at the 72dpi PDF-point convention (~842px tall), not
-         the 96dpi CSS-px assumption other engines use — confirmed by bisecting until
-         content just stopped spilling onto a spurious second page. That height is
-         also what lets .signatures (position:absolute, bottom-anchored below) sit at
-         the true bottom edge of the page rather than a guessed margin. */
+         .page's min-height (1120px) matches Puppeteer/Chromium's standard 96dpi A4
+         page (794x1123px, set as the viewport in pdfController) with a small
+         safety buffer — this is what lets .signatures (position:absolute,
+         bottom-anchored below) sit at the true bottom edge of the page. (The old
+         810px value was specific to html-pdf/PhantomJS's 72dpi quirk from before
+         the Puppeteer migration — don't reuse it if this ever changes engines
+         again; re-derive from whatever that engine's actual page pixel size is.) */
       .page {
         position: relative;
         width: 100%;
-        min-height: 810px;
+        min-height: 1120px;
         background-image: url(#{invoiceHeaderBg});
         background-size: 100% auto;
         background-position: top center;
