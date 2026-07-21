@@ -56,28 +56,6 @@ for (const weight of [400, 600, 700, 800]) {
   }
 }
 
-// PhantomJS/html-pdf was abandoned in 2018 and its prebuilt binary can't run at
-// all on serverless platforms (Vercel's read-only filesystem + function-size
-// limits), so PDF rendering now runs on real Chromium via Puppeteer instead.
-// Locally and on Render (a normal persistent container) the full `puppeteer`
-// package's own bundled Chromium is used; on Vercel, `puppeteer-core` drives the
-// serverless-optimized binary from `@sparticuz/chromium` (a purpose-built
-// package for exactly this AWS-Lambda/Vercel read-only-filesystem scenario).
-async function launchBrowser() {
-  if (process.env.VERCEL) {
-    const chromium = require('@sparticuz/chromium');
-    const puppeteerCore = require('puppeteer-core');
-    return puppeteerCore.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-  }
-  const puppeteer = require('puppeteer');
-  return puppeteer.launch({ headless: true });
-}
-
 // A4 at 96dpi (the standard CSS-px-to-print convention Chromium/Puppeteer use).
 // Setting the viewport to this size before rendering means percentage-based CSS
 // (width:100%, the header-spacer's width-based padding-top trick, etc.) resolves
@@ -85,6 +63,33 @@ async function launchBrowser() {
 // math done against this page doesn't drift between preview and printed output.
 const PAGE_WIDTH_PX = 794;
 const PAGE_HEIGHT_PX = 1123;
+
+// PhantomJS/html-pdf was abandoned in 2018 and its prebuilt binary can't run at
+// all on serverless platforms (Vercel's read-only filesystem + function-size
+// limits), so PDF rendering now runs on real Chromium via Puppeteer instead.
+// Locally and on Render (a normal persistent container) the full `puppeteer`
+// package's own bundled Chromium is used; on Vercel, `puppeteer-core` drives the
+// serverless-optimized binary from `@sparticuz/chromium` (a purpose-built
+// package for exactly this AWS-Lambda/Vercel read-only-filesystem scenario).
+// `@sparticuz/chromium`'s launch args/headless-mode API changed across versions
+// (older versions exposed `.defaultViewport`/`.headless` properties directly;
+// 140+ only ships `.args` — which already bakes in `--headless='shell'` — plus
+// `.executablePath()`), so this follows the current README's exact recipe rather
+// than the older, commonly-copied pattern.
+async function launchBrowser() {
+  if (process.env.VERCEL) {
+    const chromium = require('@sparticuz/chromium');
+    const puppeteerCore = require('puppeteer-core');
+    return puppeteerCore.launch({
+      args: puppeteerCore.defaultArgs({ args: chromium.args, headless: 'shell' }),
+      defaultViewport: { width: PAGE_WIDTH_PX, height: PAGE_HEIGHT_PX },
+      executablePath: await chromium.executablePath(),
+      headless: 'shell',
+    });
+  }
+  const puppeteer = require('puppeteer');
+  return puppeteer.launch({ headless: true });
+}
 
 exports.generatePdf = async (
   modelName,
