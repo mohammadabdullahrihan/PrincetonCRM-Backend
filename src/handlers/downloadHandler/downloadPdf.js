@@ -1,5 +1,7 @@
 const custom = require('../../controllers/pdfController');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = downloadPdf = async (req, res, { directory, id }) => {
   try {
@@ -20,11 +22,29 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
       const fileId = modelName.toLowerCase() + '-' + result._id + '.pdf';
       const folderPath = modelName.toLowerCase();
       const targetLocation = `src/public/download/${folderPath}/${fileId}`;
+      fs.mkdirSync(path.dirname(targetLocation), { recursive: true });
+      // `?view=1` renders the PDF inline in the browser tab (for the in-app preview
+      // click); without it, res.download() forces a "Save As" attachment download
+      // (the explicit "Download PDF" button/link).
+      const inline = req.query.view === '1';
       await custom.generatePdf(
         modelName,
         { filename: folderPath, format: 'A4', targetLocation },
         result,
         async () => {
+          if (inline) {
+            return res.sendFile(path.resolve(targetLocation), {
+              headers: { 'Content-Disposition': `inline; filename="${fileId}"` },
+            }, (error) => {
+              if (error)
+                return res.status(500).json({
+                  success: false,
+                  result: null,
+                  message: "Couldn't find file",
+                  error: error.message,
+                });
+            });
+          }
           return res.download(targetLocation, (error) => {
             if (error)
               return res.status(500).json({

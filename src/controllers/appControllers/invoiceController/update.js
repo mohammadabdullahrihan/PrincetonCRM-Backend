@@ -28,37 +28,9 @@ const update = async (req, res, next) => {
 
     const { credit } = previousInvoice;
 
-    const { items = [], taxRate = 0, discount = 0 } = req.body;
+    const { total = 0, discount = 0 } = req.body;
 
-    if (items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        result: null,
-        message: 'Items cannot be empty',
-      });
-    }
-
-    // default
-
-    let subTotal = 0;
-    let taxTotal = 0;
-    let total = 0;
-
-    //Calculate the items array with subTotal, total, taxTotal
-    items.map((item) => {
-      let total = calculate.multiply(item['quantity'], item['price']);
-      //sub total
-      subTotal = calculate.add(subTotal, total);
-      //item total
-      item['total'] = total;
-    });
-    taxTotal = calculate.multiply(subTotal, taxRate / 100);
-    total = calculate.add(subTotal, taxTotal);
-
-    body['subTotal'] = subTotal;
-    body['taxTotal'] = taxTotal;
     body['total'] = total;
-    body['items'] = items;
     body['pdf'] = 'invoice-' + req.params.id + '.pdf';
     if (body.hasOwnProperty('currency')) {
       delete body.currency;

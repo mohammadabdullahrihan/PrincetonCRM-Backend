@@ -18,6 +18,7 @@ const coreAuthRouter = require('./routes/coreRoutes/coreAuth');
 const coreApiRouter = require('./routes/coreRoutes/coreApi');
 const coreDownloadRouter = require('./routes/coreRoutes/coreDownloadRouter');
 const corePublicRouter = require('./routes/coreRoutes/corePublicRouter');
+const invoiceVerifyRouter = require('./routes/coreRoutes/invoiceVerifyRouter');
 const notificationRouter = require('./routes/coreRoutes/notificationRoutes');
 const aiRouter = require('./routes/coreRoutes/aiRoutes');
 const employeeRouter = require('./routes/coreRoutes/employeeRoutes');
@@ -140,6 +141,7 @@ app.use('/api', adminAuth.isValidAuthToken, notificationRouter);
 app.use('/api', adminAuth.isValidAuthToken, aiRouter);
 app.use('/download', coreDownloadRouter);
 app.use('/public', corePublicRouter);
+app.use('/verify', invoiceVerifyRouter);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);

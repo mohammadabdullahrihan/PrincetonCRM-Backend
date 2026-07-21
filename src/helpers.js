@@ -44,6 +44,51 @@ exports.timeRange = (start, end, format, interval) => {
   return range;
 };
 
+const ONES = [
+  '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+  'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen',
+];
+const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+const chunkToWords = (num) => {
+  let words = '';
+  if (num >= 100) {
+    words += ONES[Math.floor(num / 100)] + ' Hundred ';
+    num %= 100;
+  }
+  if (num >= 20) {
+    words += TENS[Math.floor(num / 10)] + ' ';
+    num %= 10;
+  }
+  if (num > 0) {
+    words += ONES[num] + ' ';
+  }
+  return words;
+};
+
+// Converts an integer amount into English words, e.g. 1500 -> "One Thousand Five Hundred"
+exports.numberToWords = (amount) => {
+  let num = Math.round(Math.abs(Number(amount) || 0));
+  if (num === 0) return 'Zero';
+
+  const scales = [
+    { value: 10000000, name: 'Crore' },
+    { value: 100000, name: 'Lakh' },
+    { value: 1000, name: 'Thousand' },
+  ];
+
+  let words = '';
+  for (const { value, name } of scales) {
+    if (num >= value) {
+      words += chunkToWords(Math.floor(num / value)) + name + ' ';
+      num %= value;
+    }
+  }
+  words += chunkToWords(num);
+
+  return words.trim();
+};
+
 exports.calculate = {
   add: (firstValue, secondValue) => {
     return currency(firstValue).add(secondValue).value;

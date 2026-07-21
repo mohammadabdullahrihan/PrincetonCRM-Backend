@@ -4,323 +4,279 @@ html
     link(rel="shortcut icon" type="image/png" href="/images/icons/favicon.png")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     style.
-      .sheet {
-        margin: 0;
-        width: 100%; 
-        height: 297mm;
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 400;
+        src: url(#{poppinsFonts[400]}) format('woff');
       }
-
-      body{
-        width: 100%; 
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 600;
+        src: url(#{poppinsFonts[600]}) format('woff');
+      }
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 700;
+        src: url(#{poppinsFonts[700]}) format('woff');
+      }
+      @font-face {
+        font-family: 'Poppins';
+        font-weight: 800;
+        src: url(#{poppinsFonts[800]}) format('woff');
+      }
+      body {
+        width: 100%;
         margin: 0;
-        padding: 0px ;
+        padding: 0;
         background: #ffffff;
-        font-family: sans-serif;
-        font-size:12px;
-        color:#222
+        font-family: 'Poppins', sans-serif;
+        font-size: 12.5px;
+        color: #222;
       }
       *, *:before, *:after {
-        box-sizing: inherit;
-        color:#222
+        box-sizing: border-box;
       }
-
-      .clearfix {
-        display: block; }
-      //- .invoice-container {
-      //-   position: relative;
-      //-   margin: 0 auto;
-      //-   color: #001028;
-      //-   background: #fff;
-      //-   font-size: 10px;
-      //- }
-      .left{
-        float:left;
+      p {
+        margin: 0;
       }
-      .right{
-        float:right;
-      }
-      .top-area {    
-        display: block;
-        width:100%;
-        
-      }
-      alignRight :{
-        text-align: right !important;
-      }
-      alignLeft :{
-        text-align: left;
-      }
-      .logo {
-        width: 150px;
-      }
-      .company-info{
-        text-align: right;
-        font-size:12px;
-      }
-      h1.invoice{
-        font-size:32px;
-        color:#52008c;
-        margin-top:0;
-      }
-      p.strong{
-        font-weight:700;
-      }
-      .billTo p {
-        text-align: right !important;
-        float:right;
-        display:block;
-        font-size:12px;
-        width:100%;
-        margin-top:0;
-        margin-bottom:10px;
-        
-      }
-
-      .tableHeader{
-        color:#52008c;
-      }
-      .clearfix {
-        display: block; }
-      .col {
-        float:left;
-      }
-      .col-1 {
-        width: 4.16667%; }
-
-      .col-2 {
-        width: 8.33333%; }
-
-      .col-3 {
-        width: 12.5%; }
-
-      .col-4 {
-        width: 16.66667%; }
-
-      .col-5 {
-        width: 20.83333%; }
-
-      .col-6 {
-        width: 25%; }
-
-      .col-7 {
-        width: 29.16667%; }
-
-      .col-8 {
-        width: 33.33333%; }
-
-      .col-9 {
-        width: 37.5%; }
-
-      .col-10 {
-        width: 41.66667%; }
-
-      .col-11 {
-        width: 45.83333%; }
-
-      .col-12 {
-        width: 50%; }
-
-      .col-13 {
-        width: 54.16667%; }
-
-      .col-14 {
-        width: 58.33333%; }
-
-      .col-15 {
-        width: 62.5%; }
-
-      .col-16 {
-        width: 66.66667%; }
-
-      .col-17 {
-        width: 70.83333%; }
-
-      .col-18 {
-        width: 75%; }
-
-      .col-19 {
-        width: 79.16667%; }
-
-      .col-20 {
-        width: 83.33333%; }
-
-      .col-21 {
-        width: 87.5%; }
-
-      .col-22 {
-        width: 91.66667%; }
-
-      .col-23 {
-        width: 95.83333%; }
-
-      .col-24 {
-        width: 100%; }
-      .space {
-        margin-top: 30px;
-        margin-bottom: 40px;
-        width:100%;
-      }
-      .top-area .number-invoice > h1 {
-        font-weight: 500;
-      }
-      .about-invoice {
-        padding: 0px 15px;
-        margin-top: 10px;
-        font-size: 13px;
-      }
-      .project-invoice {
-        float: left;
-        margin-bottom: 10px;
-      }
-      .project-invoice span {
-        color: #5d6975;
-        text-align: right;
-        width: 52px;
-        margin-right: 10px;
-        display: inline-block;
-        font-size: 0.8em;
-      }
-      .company-invoice {
-        float: right;
-        text-align: right;
-        margin-bottom: 60px;
-      }
-      .project-invoice div, .company-invoice div {
-        white-space: nowrap;
-        margin: 5px auto;
-      }
-      .table-invoice {
+      /* ---- Page / header artwork ----
+         The header (logo, company name/address/phone, "INVOICE" title, decorative
+         shape) is baked into a designed PNG (src/pdf/assets/invoice-header-bg.png)
+         rather than drawn with CSS, so it renders identically regardless of the PDF
+         engine. background-size is WIDTH-only ("100% auto") rather than "cover" —
+         the renderer's actual page pixel width can't be assumed (72dpi vs 96dpi
+         conventions differ across PDF engines), so scaling strictly by width and
+         never forcing a fixed page height avoids picking the wrong cover-axis
+         (which crops the sides) or overflowing onto a spurious blank second page.
+         The header-spacer's padding-top is a percentage of the PAGE WIDTH (CSS
+         resolves percentage padding against the containing block's width, even for
+         padding-top) which is exactly how background-size:100%-width scales this
+         image, so the reserved space always tracks the artwork's header height.
+         .page's min-height (825px) was found empirically for this html-pdf/PhantomJS
+         build: it renders A4 at the 72dpi PDF-point convention (~842px tall), not
+         the 96dpi CSS-px assumption other engines use — confirmed by bisecting until
+         content just stopped spilling onto a spurious second page. That height is
+         also what lets .signatures (position:absolute, bottom-anchored below) sit at
+         the true bottom edge of the page rather than a guessed margin. */
+      .page {
+        position: relative;
         width: 100%;
-        border-collapse: collapse;
-        border-spacing: 0;
-        margin-bottom: 20px;
+        min-height: 810px;
+        background-image: url(#{invoiceHeaderBg});
+        background-size: 100% auto;
+        background-position: top center;
+        background-repeat: no-repeat;
       }
-      .table-invoice tr:nth-child(2n-1) td {
-        background: #fcfeff;
+      .header-spacer {
+        position: relative;
+        width: 100%;
+        padding-top: 44%;
       }
-      .table-invoice th, .table-invoice td {
-        text-align: center;
+      /* ---- Body ---- */
+      .body-content {
+        padding: 2px 55px 8px;
       }
-      .table-invoice th {
-        padding: 8px 10px;
-        border-bottom: 1px solid #c2e0f2;
-        color:#52008c;
-        white-space: nowrap;
-        font-weight: 700;
+      /* Dotted fill-in-the-blank field style, matching the money-receipt reference:
+         a label, the value sitting on the line, and a dotted rule under the row.
+         A small gold tick before each label ties it back to the brand accent. */
+      .field-row {
+        display: table;
+        width: 100%;
+        margin-bottom: 13px;
+      }
+      .field-row .field-col {
+        display: table-cell;
+        width: 50%;
+        vertical-align: bottom;
+        padding-right: 8px;
+      }
+      .field {
+        border-bottom: 1.5px dotted #9a9a9a;
+        padding-bottom: 6px;
+      }
+      .field-label {
+        font-weight: 600;
+        color: #14161c;
+      }
+      .field-value {
+        color: #333;
+        margin-left: 4px;
+      }
+      .field-sub {
         font-size: 12px;
-        text-align: right;
+        color: #666;
+        margin: 6px 0 0;
+        line-height: 1.6;
       }
-      tbody{
-        border-bottom: 1px solid #c2e0f2;
+      .field-boxed {
+        border: 1.5px solid #14161c;
+        border-radius: 4px;
+        padding: 7px 16px;
+        margin-bottom: 16px;
       }
-      .table-invoice .service, .table-invoice .desc {
-        text-align: left;
+      .field-boxed .field-label {
+        font-size: 14px;
       }
-      .table-invoice td {
-        padding: 10px ;
-        text-align: right;
-        font-size: 11px;
+      .field-boxed .field-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #14161c;
       }
-      .table-invoice td.service, .table-invoice td.desc {
-        vertical-align: top;
+      /* ---- Notes ---- */
+      .notes {
+        margin-top: 0;
+        margin-bottom: 6px;
       }
-      .table-invoice td.unit, .table-invoice td.qty, .table-invoice td.total {
-        
+      .notes-label {
+        font-weight: 600;
+        color: #14161c;
+        margin: 0 0 8px;
       }
-      .table-invoice td.grand {
-        border-top: 1px solid #5d6975;
+      .notes-value {
+        color: #444;
+        line-height: 1.4;
+        white-space: pre-wrap;
       }
-      .service span{
-        display:block;
-        clear:both;
-        width : 100%;
-        color:#666;
-        margin-top:5px;
-        font-size:10px;
-      }
-      .notice-invoice {
-        padding: 15px;
-      }
-      .notice-invoice .notice {
-        color: #5d6975;
-        
-      }
-      .footer-invoice {
-        margin-top:30px
-        color: #5d6975;
-        width: 100%;
+      /* ---- Signatures ----
+         Pinned to the true bottom of the page (see .page comment above) rather than
+         following the document flow, so it always sits at the bottom of the sheet
+         regardless of how short the content above it is. */
+      .signatures {
         position: absolute;
-        bottom: 0;
-        
-        padding: 20px 0;
+        left: 55px;
+        right: 55px;
+        bottom: 24px;
+        display: table;
+        width: auto;
+      }
+      .signatures .sig-cell {
+        display: table-cell;
+        width: 33.33%;
+        text-align: center;
+        font-size: 12px;
+        color: #555;
+      }
+      .sig-line {
+        border-top: 1.5px dotted #9a9a9a;
+        margin: 0 20px 10px;
+      }
+      .sig-role {
+        font-weight: 700;
+        color: #14161c;
+      }
+      /* ---- Verification badge ----
+         Small QR + caption, positioned as a child of .header-spacer with a
+         NEGATIVE bottom offset — .header-spacer's own height is set by its
+         width-based padding-top (see header comment above), so anchoring to ITS
+         bottom edge (rather than a guessed top/height on .page) keeps the badge
+         locked to the true seam between the header artwork and the white body,
+         regardless of actual rendered page width. bottom:-64px places the badge
+         just clear of the dark header, in the white area right beside the
+         SL No/Date row, so it reads as a top-right corner badge, not something
+         buried near the signatures. Costs zero document-flow height either way. */
+      .verify-badge {
+        position: absolute;
+        right: 55px;
+        bottom: -70px;
+        width: 58px;
         text-align: center;
       }
- 
+      .verify-badge img {
+        width: 50px;
+        height: 50px;
+        display: block;
+        margin: 0 auto;
+      }
+      .verify-badge p {
+        font-size: 6.5px;
+        color: #888;
+        line-height: 1.3;
+        margin-top: 3px;
+        word-break: break-all;
+      }
   body
-    
-      header.clearfix
-        .top-area
-          img.logo.left(src=settings.public_server_file+settings.company_logo)
-          .right.company-info
-              p.strong #{settings.company_name}
-              p #{settings.company_address}
-              p #{settings.company_reg_number}
-              
-        .col.col-24
-          .space  
-        .left.col-14
-            h1.invoice
-              | #{translate('invoice')}
-            div 
-              .col.col-7
-                p.strong #{translate('Date')} :
-                p #{moment(model.date).format(dateFormat)}
-              .col.col-9
-                p.strong #{translate('Expired Date')} :
-                p #{moment(model.expiredDate).format(dateFormat)}
-              .col.col-8 
-                p.strong #{translate('Number')} :
-                p # #{model.number}/#{model.year || ""} 
-              
-        .right.col-10
-            .billTo
-                p #{translate('Client')} :
-                p #{model.client.name}
-                p #{model.client.address}
-                p #{model.client.phone}
-                p #{model.client.email}
-        .col.col-24
-          .space  
-      main
-        table.table-invoice
-          thead
-            tr.tableHeader
-              th.service #{translate('item')}
-              th #{translate('Quantity')}
-              th #{translate('PRICE')}
-              th #{translate('TOTAL')}
-          tbody
-            each item in model.items
-              tr
-                td.service #{item.itemName}
-                  span #{item.description}
-                td.qty #{item.quantity}  
-                td.unit  #{moneyFormatter({amount:item.price})}
-                td.total #{moneyFormatter({amount:item.total})}
-            tr
-              td(colspan='3') #{translate('SUB TOTAL')}
-              td.total #{moneyFormatter({amount:model.subTotal})}
-            tr
-              td(colspan='3') #{translate('TAX')} #{model.taxRate} %
-              td.total #{moneyFormatter({amount:model.taxTotal})}
-            tr
-              td.grand.total(colspan='3')  #{translate('TOTAL')} 
-              td.grand.total #{moneyFormatter({amount:model.total})}
-        
-      .col.col-24
-          .space     
-      footer.footer-invoice
-        //- | Invoice was created on a computer and is valid without the signature and seal.
-          
+    .page
+      .header-spacer
+        if verifyQrDataUri
+          .verify-badge
+            img(src=verifyQrDataUri)
+            p Scan to verify
+      .body-content
+        .field-row
+          .field-col
+            .field
+              span.field-label SL No :
+              span.field-value= model.number
+          .field-col(style="padding-right:75px;")
+            .field
+              span.field-label Date :
+              span.field-value= moment(model.date).format(dateFormat)
 
-   
+        .field-row
+          .field-col(style="width:100%; padding-right:75px;")
+            .field
+              span.field-label Invoice No :
+              span.field-value= (settings.invoice_prefix || '') + model.number + '/' + model.year
+
+        .field-row
+          .field-col(style="width:100%; padding-right:0;")
+            .field
+              span.field-label Payable To :
+              span.field-value= model.client ? model.client.name : ''
+            if model.client && (model.client.address || model.client.phone)
+              p.field-sub
+                if model.client.address
+                  | #{model.client.address}
+                if model.client.address && model.client.phone
+                  |  &middot;&nbsp;
+                if model.client.phone
+                  | #{model.client.phone}
+
+        .field-row
+          .field-col
+            .field
+              span.field-label Location :
+              span.field-value= model.location || '-'
+          .field-col
+            .field
+              span.field-label Project Name :
+              span.field-value= model.projectName || '-'
+
+        .field-row
+          .field-col(style="width:100%; padding-right:0;")
+            .field
+              span.field-label Payment Purpose :
+              span.field-value= model.paymentPurpose || '-'
+
+        .field-row
+          .field-col(style="width:100%; padding-right:0;")
+            .field
+              span.field-label Payment Method :
+              span.field-value= model.paymentMethod || '-'
+
+        .field-boxed
+          span.field-label Amount Paid :
+          span.field-value= '৳ ' + Number(model.total || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })
+
+        .field-row
+          .field-col(style="width:100%; padding-right:0;")
+            .field
+              span.field-label Amount in Words :
+              span.field-value= numberToWords(model.total) + ' Taka Only'
+
+        if model.notes
+          .notes
+            p.notes-label Notes
+            p.notes-value= model.notes
+
+      .signatures
+        .sig-cell
+          .sig-line
+          p.sig-role Deposited By
+          | (Client or Representative)
+        .sig-cell
+          .sig-line
+          p.sig-role Received By
+        .sig-cell
+          .sig-line
+          p.sig-role Authorized By

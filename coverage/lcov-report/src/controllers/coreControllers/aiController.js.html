@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0.69% </span>
+                <span class="strong">1.15% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/432</span>
+                <span class='fraction'>5/434</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0.88% </span>
+                <span class="strong">1.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/338</span>
+                <span class='fraction'>5/340</span>
             </div>
         
             
@@ -609,7 +609,13 @@
 <a name='L544'></a><a href='#L544'>544</a>
 <a name='L545'></a><a href='#L545'>545</a>
 <a name='L546'></a><a href='#L546'>546</a>
-<a name='L547'></a><a href='#L547'>547</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">35x</span>
+<a name='L547'></a><a href='#L547'>547</a>
+<a name='L548'></a><a href='#L548'>548</a>
+<a name='L549'></a><a href='#L549'>549</a>
+<a name='L550'></a><a href='#L550'>550</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -675,8 +681,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1155,7 +1161,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">exports.geminiChat = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.local' });
+&nbsp;
+exports.geminiChat = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
   const apiKey = <span class="cstat-no" title="statement not covered" >process.env.GEMINI_API_KEY;</span>
 <span class="cstat-no" title="statement not covered" >  if (!apiKey) {</span>
 <span class="cstat-no" title="statement not covered" >    return res.status(500).json({</span>
@@ -1258,7 +1267,7 @@ exports.executeCommand = <span class="fstat-no" title="function not covered" >as
 <span class="cstat-no" title="statement not covered" >      if (c === 'apartment') {</span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'all') <span class="cstat-no" title="statement not covered" >return { model: 'Apartment', category: 'Apartment', subCategory: 'all' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'sale') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentBuyer', category: 'Apartment', subCategory: 'sale' };</span></span>
-<span class="cstat-no" title="statement not covered" >        if (s === 'owner') <span class="cstat-no" title="statement not covered" >return { model: 'Apartment', category: 'Apartment', subCategory: 'owner' };</span></span>
+<span class="cstat-no" title="statement not covered" >        if (s === 'owner') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentOwner', category: 'Apartment', subCategory: 'owner' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'client') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentClient', category: 'Apartment', subCategory: 'client' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'vip') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'vip-client') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip-client' };</span></span>
@@ -1415,7 +1424,7 @@ exports.executeCommand = <span class="fstat-no" title="function not covered" >as
 <span class="cstat-no" title="statement not covered" >      if (c === 'apartment') {</span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'all') <span class="cstat-no" title="statement not covered" >return { model: 'Apartment', category: 'Apartment', subCategory: 'all' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'sale') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentBuyer', category: 'Apartment', subCategory: 'sale' };</span></span>
-<span class="cstat-no" title="statement not covered" >        if (s === 'owner') <span class="cstat-no" title="statement not covered" >return { model: 'Apartment', category: 'Apartment', subCategory: 'owner' };</span></span>
+<span class="cstat-no" title="statement not covered" >        if (s === 'owner') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentOwner', category: 'Apartment', subCategory: 'owner' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'client') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentClient', category: 'Apartment', subCategory: 'client' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'vip') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip' };</span></span>
 <span class="cstat-no" title="statement not covered" >        if (s === 'vip-client') <span class="cstat-no" title="statement not covered" >return { model: 'ApartmentVIP', category: 'Apartment', subCategory: 'vip-client' };</span></span>
@@ -1708,7 +1717,7 @@ exports.executeCommand = <span class="fstat-no" title="function not covered" >as
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-19T06:30:44.391Z
+                at 2026-07-20T20:05:31.321Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

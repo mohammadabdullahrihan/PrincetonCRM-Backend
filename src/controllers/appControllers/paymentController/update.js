@@ -52,6 +52,9 @@ const update = async (req, res) => {
     paymentMode: req.body.paymentMode,
     ref: req.body.ref,
     description: req.body.description,
+    location: req.body.location,
+    projectName: req.body.projectName,
+    paymentPurpose: req.body.paymentPurpose,
     updated: updatedDate,
   };
 

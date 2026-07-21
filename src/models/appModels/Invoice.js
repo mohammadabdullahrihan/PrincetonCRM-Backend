@@ -48,63 +48,6 @@ const invoiceSchema = new mongoose.Schema({
       ref: 'Quote',
     },
   },
-  items: [
-    {
-      // product: {
-      //   type: mongoose.Schema.ObjectId,
-      //   ref: 'Product',
-      //   // required: true,
-      // },
-      itemName: {
-        type: String,
-        required: true,
-      },
-      description: {
-        type: String,
-      },
-      quantity: {
-        type: Number,
-        default: 1,
-        required: true,
-      },
-      price: {
-        type: Number,
-        required: true,
-      },
-      // discount: {
-      //   type: Number,
-      //   default: 0,
-      // },
-      // taxRate: {
-      //   type: Number,
-      //   default: 0,
-      // },
-      // subTotal: {
-      //   type: Number,
-      //   default: 0,
-      // },
-      // taxTotal: {
-      //   type: Number,
-      //   default: 0,
-      // },
-      total: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
-  taxRate: {
-    type: Number,
-    default: 0,
-  },
-  subTotal: {
-    type: Number,
-    default: 0,
-  },
-  taxTotal: {
-    type: Number,
-    default: 0,
-  },
   total: {
     type: Number,
     default: 0,
@@ -145,9 +88,21 @@ const invoiceSchema = new mongoose.Schema({
   notes: {
     type: String,
   },
+  location: {
+    type: String,
+  },
+  projectName: {
+    type: String,
+  },
+  paymentPurpose: {
+    type: String,
+  },
+  paymentMethod: {
+    type: String,
+  },
   status: {
     type: String,
-    enum: ['draft', 'pending', 'sent', 'refunded', 'cancelled', 'on hold'],
+    enum: ['draft', 'pending', 'sent', 'paid', 'refunded', 'cancelled', 'on hold'],
     default: 'draft',
   },
   pdf: {
