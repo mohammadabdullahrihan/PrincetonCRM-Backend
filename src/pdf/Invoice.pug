@@ -149,6 +149,7 @@ html
         bottom: 32px;
         display: table;
         width: auto;
+        table-layout: fixed;
       }
       .signatures .sig-cell {
         display: table-cell;
@@ -257,7 +258,7 @@ html
 
         .field-boxed
           span.field-label Amount Paid :
-          span.field-value= '৳ ' + Number(model.total || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })
+          span.field-value= Number(model.total || 0).toLocaleString('en-US', { maximumFractionDigits: 0 }) + ' TK'
 
         .field-row
           .field-col(style="width:100%; padding-right:0;")

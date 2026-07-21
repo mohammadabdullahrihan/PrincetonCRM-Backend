@@ -91,6 +91,37 @@ async function launchBrowser() {
   return puppeteer.launch({ headless: true });
 }
 
+// Launching Chromium (launchBrowser) is by far the slowest part of PDF
+// generation — hundreds of ms to multiple seconds — and previously ran on
+// EVERY "view PDF" click, since generatePdf launched a fresh browser and
+// closed it again per request. That's why opening the live-preview PDF felt
+// slow even for a document that was just viewed a moment ago. A single
+// Chromium process is reused across requests instead (one launch per warm
+// server process), and only the lightweight per-request `page` is opened and
+// closed each time — page creation/render is fast, the browser launch is not.
+let browserInstance = null;
+let browserLaunchPromise = null;
+
+async function getBrowser() {
+  if (browserInstance && browserInstance.isConnected()) {
+    return browserInstance;
+  }
+  if (!browserLaunchPromise) {
+    browserLaunchPromise = launchBrowser()
+      .then((browser) => {
+        browserInstance = browser;
+        browser.once('disconnected', () => {
+          if (browserInstance === browser) browserInstance = null;
+        });
+        return browser;
+      })
+      .finally(() => {
+        browserLaunchPromise = null;
+      });
+  }
+  return browserLaunchPromise;
+}
+
 exports.generatePdf = async (
   modelName,
   info = { filename: 'pdf_file', format: 'A5', targetLocation: '' },
@@ -172,9 +203,9 @@ exports.generatePdf = async (
       const border = modelName.toLowerCase() === 'invoice' ? '0' : '10mm';
       const margin = { top: border, bottom: border, left: border, right: border };
 
-      const browser = await launchBrowser();
+      const browser = await getBrowser();
+      const page = await browser.newPage();
       try {
-        const page = await browser.newPage();
         await page.setViewport({ width: PAGE_WIDTH_PX, height: PAGE_HEIGHT_PX });
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
         // Base64 @font-face sources still need a tick to actually apply before
@@ -187,7 +218,7 @@ exports.generatePdf = async (
           margin,
         });
       } finally {
-        await browser.close();
+        await page.close();
       }
 
       if (callback) callback();
