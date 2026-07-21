@@ -100,6 +100,15 @@ const invoiceSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
   },
+  bankName: {
+    type: String,
+  },
+  bankBranch: {
+    type: String,
+  },
+  chequeNo: {
+    type: String,
+  },
   status: {
     type: String,
     enum: ['draft', 'pending', 'sent', 'paid', 'refunded', 'cancelled', 'on hold'],

@@ -223,7 +223,7 @@ html
         .field-row
           .field-col(style="width:100%; padding-right:0;")
             .field
-              span.field-label Payable To :
+              span.field-label Client Name :
               span.field-value= model.client ? model.client.name : ''
             if model.client && (model.client.address || model.client.phone)
               p.field-sub
@@ -250,11 +250,17 @@ html
               span.field-label Payment Purpose :
               span.field-value= model.paymentPurpose || '-'
 
+        - var bankBits = [];
+        - if (model.chequeNo) bankBits.push((model.paymentMethod === 'Pay Order' ? 'PO No: ' : 'Cheque No: ') + model.chequeNo);
+        - if (model.bankName) bankBits.push(model.bankName);
+        - if (model.bankBranch) bankBits.push(model.bankBranch + ' Branch');
         .field-row
           .field-col(style="width:100%; padding-right:0;")
             .field
               span.field-label Payment Method :
               span.field-value= model.paymentMethod || '-'
+            if bankBits.length
+              p.field-sub= bankBits.join(' • ')
 
         .field-boxed
           span.field-label Amount Paid :
