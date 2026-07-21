@@ -1,5 +1,6 @@
 const pug = require('pug');
 const fs = require('fs');
+const path = require('path');
 const moment = require('moment');
 const QRCode = require('qrcode');
 let pdf = require('html-pdf');
@@ -14,11 +15,21 @@ const pugFiles = ['invoice', 'offer', 'quote', 'payment'];
 require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 
+// __dirname-based (not CWD-relative) — on serverless platforms like Vercel, the
+// function's working directory isn't guaranteed to be the project root, so a bare
+// 'src/pdf/...' path resolves nowhere. __dirname always points at this file's own
+// directory inside the deployed bundle regardless of how/where the process was
+// launched. (vercel.json also needs "includeFiles": ["src/pdf/**"] so these
+// non-JS assets — .pug/.png/.woff — actually get bundled in the first place;
+// Vercel's static analysis doesn't follow the dynamic 'src/pdf/' + modelName
+// string below, so without that config it silently excludes them.)
+const PDF_DIR = path.join(__dirname, '../../pdf');
+
 // Company logo, embedded as a base64 data URI so PDF rendering never depends
 // on a reachable PUBLIC_SERVER_FILE URL.
 let logoDataUri = null;
 try {
-  const logoBuffer = fs.readFileSync('src/pdf/assets/princeton-logo.jpeg');
+  const logoBuffer = fs.readFileSync(path.join(PDF_DIR, 'assets/princeton-logo.jpeg'));
   logoDataUri = `data:image/jpeg;base64,${logoBuffer.toString('base64')}`;
 } catch {
   logoDataUri = null;
@@ -28,7 +39,7 @@ try {
 // embedded as a base64 data URI for the same reason as the logo above.
 let invoiceHeaderBg = null;
 try {
-  const bgBuffer = fs.readFileSync('src/pdf/assets/invoice-header-bg.png');
+  const bgBuffer = fs.readFileSync(path.join(PDF_DIR, 'assets/invoice-header-bg.png'));
   invoiceHeaderBg = `data:image/png;base64,${bgBuffer.toString('base64')}`;
 } catch {
   invoiceHeaderBg = null;
@@ -39,7 +50,7 @@ try {
 const poppinsFonts = {};
 for (const weight of [400, 600, 700, 800]) {
   try {
-    const buf = fs.readFileSync(`src/pdf/assets/fonts/poppins-${weight}.woff`);
+    const buf = fs.readFileSync(path.join(PDF_DIR, `assets/fonts/poppins-${weight}.woff`));
     poppinsFonts[weight] = `data:font/woff;base64,${buf.toString('base64')}`;
   } catch {
     poppinsFonts[weight] = null;
@@ -107,7 +118,7 @@ exports.generatePdf = async (
         }
       }
 
-      const htmlContent = pug.renderFile('src/pdf/' + modelName + '.pug', {
+      const htmlContent = pug.renderFile(path.join(PDF_DIR, modelName + '.pug'), {
         model: result,
         settings,
         translate,
