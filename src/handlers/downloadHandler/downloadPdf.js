@@ -2,6 +2,7 @@ const custom = require('../../controllers/pdfController');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 module.exports = downloadPdf = async (req, res, { directory, id }) => {
   try {
@@ -21,7 +22,11 @@ module.exports = downloadPdf = async (req, res, { directory, id }) => {
 
       const fileId = modelName.toLowerCase() + '-' + result._id + '.pdf';
       const folderPath = modelName.toLowerCase();
-      const targetLocation = `src/public/download/${folderPath}/${fileId}`;
+      // os.tmpdir() (not a project-relative path) — serverless platforms like
+      // Vercel ship a read-only filesystem for everything except /tmp, so writing
+      // anywhere under the project directory (e.g. src/public/...) throws
+      // ENOENT/EROFS there. /tmp is writable in local dev and on Render too.
+      const targetLocation = path.join(os.tmpdir(), 'download', folderPath, fileId);
       fs.mkdirSync(path.dirname(targetLocation), { recursive: true });
       // `?view=1` renders the PDF inline in the browser tab (for the in-app preview
       // click); without it, res.download() forces a "Save As" attachment download

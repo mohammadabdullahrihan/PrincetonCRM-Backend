@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const mongoose = require('mongoose');
 const { Resend } = require('resend');
 
@@ -50,7 +51,10 @@ const mail = async (req, res) => {
   }
 
   const fileId = 'invoice-' + invoice._id + '.pdf';
-  const targetLocation = `src/public/download/invoice/${fileId}`;
+  // os.tmpdir() (not a project-relative path) — serverless platforms like Vercel
+  // ship a read-only filesystem for everything except /tmp, so writing anywhere
+  // under the project directory (e.g. src/public/...) throws ENOENT/EROFS there.
+  const targetLocation = path.join(os.tmpdir(), 'download', 'invoice', fileId);
 
   try {
     fs.mkdirSync(path.dirname(targetLocation), { recursive: true });
