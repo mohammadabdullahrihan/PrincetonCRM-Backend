@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "env": {
+    "FRONTEND_URL": "https://crm.princetondevelopmentltd.com"
+  },
   "builds": [
     {
       "src": "src/server.js",

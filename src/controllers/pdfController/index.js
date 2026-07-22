@@ -174,6 +174,9 @@ exports.generatePdf = async (
       let verifyQrDataUri = null;
       let verifyUrl = null;
       if (modelName.toLowerCase() === 'invoice' && result?._id) {
+        if (!process.env.FRONTEND_URL && process.env.NODE_ENV === 'production') {
+          console.warn('FRONTEND_URL is not set in production — invoice verification QR codes will point at localhost.');
+        }
         const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/+$/, '');
         verifyUrl = `${frontendUrl}/verify/${result._id}`;
         try {
