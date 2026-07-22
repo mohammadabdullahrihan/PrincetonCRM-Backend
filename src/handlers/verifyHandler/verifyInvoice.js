@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { loadSettings } = require('../../middlewares/settings');
 
 // Public, unauthenticated lookup for the invoice-verification QR/link printed on
 // invoice PDFs. Only returns the same info already printed on the paper invoice
@@ -20,8 +19,6 @@ module.exports = verifyInvoice = async (req, res) => {
       return res.status(404).json({ success: false, result: null, message: 'Invoice not found' });
     }
 
-    const settings = await loadSettings();
-
     return res.status(200).json({
       success: true,
       result: {
@@ -33,7 +30,6 @@ module.exports = verifyInvoice = async (req, res) => {
         projectName: invoice.projectName || '',
         total: invoice.total,
         status: invoice.status,
-        companyName: settings.company_name || 'Princeton Development Ltd.',
       },
     });
   } catch (error) {
